@@ -1,0 +1,36 @@
+header:
+  version: 14
+
+machine: p3737-0000-p3701-0005
+distro: kepler-jetson
+target: kepler-jetson-odc-base
+
+defaults:
+  repos:
+    branch: scarthgap
+
+repos:
+  meta-kepler-jetson:
+    path: meta-kepler-jetson
+
+  meta-tegra:
+    url: https://github.com/OE4T/meta-tegra
+
+  meta-tegra-community:
+    url: https://github.com/OE4T/meta-tegra-community
+
+  meta-virtualization:
+    url: https://git.yoctoproject.org/meta-virtualization
+
+  meta-openembedded:
+    url: https://git.openembedded.org/meta-openembedded
+    layers:
+      meta-filesystems:
+      meta-networking:
+      meta-python:
+      meta-oe:
+
+  poky:
+    url: https://git.yoctoproject.org/poky
+    layers:
+      meta:
