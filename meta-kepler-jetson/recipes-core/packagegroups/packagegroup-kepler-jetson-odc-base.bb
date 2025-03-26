@@ -1,0 +1,16 @@
+DESCRIPTION = "Packagegroup for all Kepler Jetson images"
+
+LICENSE = "CLOSED"
+
+inherit packagegroup
+
+RDEPENDS:${PN} = "\
+    less \
+    ncurses-terminfo-base \
+    nv-tegra-release \
+    os-release \
+    procps \
+    systemd-conf \
+    tegra-tools-tegrastats \
+    vim \
+"

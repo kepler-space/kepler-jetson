@@ -1,9 +1,9 @@
 header:
   version: 14
 
-machine: p3737-0000-p3701-0005
+machine: kepler-ecg-v1
 distro: kepler-jetson
-target: kepler-jetson-odc-base
+target: swupdate-image-tegra
 
 defaults:
   repos:
@@ -34,3 +34,13 @@ repos:
     url: https://git.yoctoproject.org/poky
     layers:
       meta:
+
+  meta-swupdate:
+    url: https://github.com/sbabic/meta-swupdate
+
+local_conf_header:
+    swupdate-tegra: |
+        IMAGE_INSTALL:append = " swupdate swupdate-ipc"
+        IMAGE_FSTYPES:append = " tar.gz"
+        SWUPDATE_CORE_IMAGE_NAME = "kepler-jetson-odc-dev"
+        NO_RECOMMENDATIONS = "1"
