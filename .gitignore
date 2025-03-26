@@ -2,3 +2,4 @@ poky
 meta-*
 !meta-kepler-jetson
 build
+.kas_shell_history
