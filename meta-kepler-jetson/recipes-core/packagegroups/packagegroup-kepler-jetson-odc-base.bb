@@ -5,6 +5,7 @@ LICENSE = "CLOSED"
 inherit packagegroup
 
 RDEPENDS:${PN} = "\
+    ${MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS} \
     less \
     ncurses-terminfo-base \
     nv-tegra-release \
