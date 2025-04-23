@@ -43,4 +43,10 @@ local_conf_header:
         IMAGE_INSTALL:append = " swupdate swupdate-ipc"
         IMAGE_FSTYPES:append = " tar.gz"
         SWUPDATE_CORE_IMAGE_NAME = "kepler-jetson-odc-dev"
+    minimize-image: |
         NO_RECOMMENDATIONS = "1"
+    build-info: |
+        INHERIT += "image-buildinfo"
+        IMAGE_BUILDINFO_VARS:append = " DATETIME DISTRO_NAME IMAGE_BASENAME MACHINE TUNE_PKGARCH"
+        IMAGE_BUILDINFO_VARS:append = " MACHINE_FEATURES DISTRO_FEATURES COMMON_FEATURES IMAGE_FEATURES"
+        IMAGE_BUILDINFO_VARS:append = " TUNE_FEATURES TARGET_FPU"

@@ -1,0 +1,112 @@
+// SPDX-License-Identifier: GPL-2.0-only
+// SPDX-FileCopyrightText: Copyright (c) 2025, Kepler Communications.  All rights reserved.
+
+/dts-v1/;
+
+#include "tegra234-p3737-0000+p3701-0000.dts"
+#include "tegra234-p3737-0000+p3701-xxxx-nv-common.dtsi"
+#include "tegra234-p3701-0000.dtsi"
+
+/ {
+    model = "Kepler ECGv1";
+    compatible = "kepler,ecg-v1","nvidia,tegra234";
+
+    // GPU reserved memory
+    reserved-memory {
+        linux,cma {
+            size = <0x0 0x20000000>;
+        };
+    };
+
+    bus@0 {
+        // 40-pin header UART busses
+        serial@3110000 {
+            status = "disabled";
+        };
+        serial@31d0000 {
+            status = "disabled";
+        };
+        // 10G PHY-less Ethernet
+        ethernet@6800000 {
+            /delete-property/ phy-handle;
+            /delete-property/ nvidia,mdio_addr;
+            /* 1: 10G, 0: 5G */
+            nvidia,uphy-gbe-mode = <1>;
+            fixed-link {
+                speed = <10000>;
+                full-duplex;
+            };
+            /delete-node/ mdio;
+        };
+        // SD Card
+        mmc@3400000 {
+            status = "disabled";
+        };
+        // Audio
+        aconnect@2900000 {
+            status = "disabled";
+        };
+        // HD Audio
+        hda@3510000 {
+            status = "disabled";
+        };
+        i2c@3160000 {
+            //status = "disabled";
+            // Carrier board EEPROM
+            /delete-node/ eeprom@56;
+        };
+        // 40-pin header I2C busses
+        i2c@3190000 {
+            status = "disabled";
+        };
+        i2c@31b0000 {
+            status = "disabled";
+        };
+        i2c@31c0000 {
+            status = "disabled";
+        };
+        // Audio codec
+        i2c@31e0000 {
+            status = "disabled";
+            // Not present, but can't be deleted because the 3737 device tree includes depend on it.
+            audio-codec@1c {
+                status = "disabled";
+            };
+        };
+        // 40-pin header SPI busses
+        spi@3210000 {
+            status = "disabled";
+        };
+        spi@3230000 {
+            status = "disabled";
+        };
+        // CAN busses
+        mttcan@c310000 {
+            status = "disabled";
+        };
+        mttcan@c320000 {
+            status = "disabled";
+        };
+        // USB
+        padctl@3520000 {
+            status = "disabled";
+        };
+        usb@3550000 {
+            status = "disabled";
+        };
+        usb@3610000 {
+            status = "disabled";
+        };
+        // PCIe
+        pcie@14100000 {
+            status = "disabled";
+        };
+    };
+    sound {
+        status = "disabled";
+    };
+    // HDMI/DP
+    display@13800000 {
+        status = "disabled";
+    };
+};

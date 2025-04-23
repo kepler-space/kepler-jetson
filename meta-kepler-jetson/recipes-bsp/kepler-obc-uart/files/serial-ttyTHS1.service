@@ -1,0 +1,34 @@
+[Unit]
+Description=Serial Getty on ttyTHS1
+PartOf=dev-ttyTHS1.device
+ConditionPathExists=/dev/ttyTHS1
+After=dev-ttyTHS1.device systemd-user-sessions.service plymouth-quit-wait.service getty-pre.target
+After=rc-local.service
+
+# If additional gettys are spawned during boot then we should make
+# sure that this is synchronized before getty.target, even though
+# getty.target didn't actually pull it in.
+Before=getty.target
+IgnoreOnIsolate=yes
+
+# IgnoreOnIsolate causes issues with sulogin, if someone isolates
+# rescue.target or starts rescue.service from multi-user.target or
+# graphical.target.
+Conflicts=rescue.service
+Before=rescue.service
+
+[Service]
+Environment="TERM=linux"
+ExecStart=-/sbin/agetty -8 -L ttyTHS1 115200 $TERM
+Type=idle
+Restart=always
+UtmpIdentifier=ttyTHS1
+TTYPath=/dev/ttyTHS1
+TTYReset=yes
+TTYVHangup=yes
+KillMode=process
+IgnoreSIGPIPE=no
+SendSIGHUP=yes
+
+[Install]
+WantedBy=getty.target
