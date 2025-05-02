@@ -108,7 +108,7 @@ The project uses [kas](https://kas.readthedocs.io/) to manage build configuratio
 
 ### 32GB Variant
 
-To build the image for the 32GB payload (default):
+To build the image for the 32GB payload (default, matches ECG hardware):
 
 ```bash
 # The 32GB variant is built by default
@@ -165,9 +165,9 @@ sudo screen /dev/ttyACM0 115200
 For devices already running a compatible image, you can use OTA updates:
 
 ```bash
-scp build/tmp/deploy/images/kepler-ecg-v1/swupdate-image-tegra-kepler-ecg-v1.rootfs.swu root@192.168.109.1:
-ssh root@192.168.109.1 "swupdate -i swupdate-image-tegra-kepler-ecg-v1.rootfs.swu"
-ssh root@192.168.109.1 "reboot"
+scp build/tmp/deploy/images/kepler-ecg-v1/swupdate-image-tegra-kepler-ecg-v1.rootfs.swu kepler@192.168.109.1:
+ssh kepler@192.168.109.1 "sudo swupdate -i swupdate-image-tegra-kepler-ecg-v1.rootfs.swu"
+ssh kepler@192.168.109.1 "sudo reboot"
 ```
 
 Replace `192.168.109.1` with the IP address of your Jetson devkit.
@@ -186,7 +186,7 @@ To connect your host machine to the Jetson devkit's Ethernet port:
 ip a
 
 # Configure a static IP (assuming Jetson has IP 192.168.109.1)
-sudo ip addr add 192.168.109.2/24 dev <interface_name>
+sudo ip addr add 192.168.109.10/24 dev <interface_name>
 sudo ip link set <interface_name> up
 
 # Test connectivity
@@ -194,6 +194,13 @@ ping 192.168.109.1
 ```
 
 For a persistent configuration, you can add this to your network configuration files (e.g., NetworkManager or netplan).
+
+> **Note:** The host network configuration described above will only provide network connectivity between the host machine
+and the Jetson dev kit. It will not provide the Jetson with network access to the internet. To allow internet access, you
+will need to configure your host machine as a gateway. The exact configuration will depend on your network setup, but may
+involve enabling packet forwarding (e.g., `sysctl -w net.ipv4.ip_forward=1`), modifying firewall rules (e.g. `iptables`),
+and/or enabling NAT (e.g., `iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE`). Refer to your host machine's network manager
+documentation for more the best way to configure this for your specific setup.
 
 ### Connecting via SSH
 
@@ -246,6 +253,16 @@ cat /etc/buildinfo
 
 ## Customizing the Image
 
+### Creating Custom Layers
+
+Create a new layer for your customizations:
+
+```bash
+kas shell kas-kepler-jetson.yml -c 'bitbake-layers create-layer ../meta-custom-layer'
+```
+
+Then add the layer to your `kas` configuration file.
+
 ### Adding Custom Packages
 
 To add additional packages to the image:
@@ -254,7 +271,7 @@ To add additional packages to the image:
 
 ```bash
 # Create a bbappend file for the image recipe in your layer
-cat > meta-kepler-jetson/recipes-core/images/kepler-jetson-odc-dev-base.bbappend << EOF
+cat > meta-custom-layer/recipes-core/images/kepler-jetson-odc-dev-base.bbappend << EOF
 # Add packages to the image
 CORE_IMAGE_EXTRA_INSTALL += " package1 package2 package3"
 EOF
@@ -264,7 +281,7 @@ EOF
 
 ```bash
 # Create a new package group recipe in your layer
-cat > meta-kepler-jetson/recipes-core/packagegroups/packagegroup-my-extras.bb << EOF
+cat > meta-custom-layer/recipes-core/packagegroups/packagegroup-my-extras.bb << EOF
 DESCRIPTION = "Additional packages for Kepler Jetson image"
 LICENSE = "MIT"
 
@@ -278,25 +295,8 @@ RDEPENDS:${PN} = "\\
 EOF
 
 # Then add the package group to your image recipe
-echo 'CORE_IMAGE_EXTRA_INSTALL += "packagegroup-my-extras"' >> meta-kepler-jetson/recipes-core/images/kepler-jetson-odc-dev.bbappend
+echo 'CORE_IMAGE_EXTRA_INSTALL += "packagegroup-my-extras"' >> meta-custom-layer/recipes-core/images/kepler-jetson-odc-dev.bbappend
 ```
-
-### Creating Custom Layers
-
-For significant customizations, create a new layer:
-
-```bash
-# Enter the kas environment first
-kas shell kas-kepler-jetson.yml
-
-# Once in the kas shell, create a new layer
-bitbake-layers create-layer ../meta-custom-layer
-
-# Exit the kas shell when done
-exit
-```
-
-Then add the layer to your `kas` configuration file.
 
 ### Customizing the Linux Kernel
 
@@ -305,27 +305,21 @@ To customize the Linux kernel configuration:
 1. **Generate a kernel config fragment using menuconfig and diffconfig**:
 
 ```bash
-# Enter kas shell
-kas shell kas-kepler-jetson.yml
-
 # Configure the kernel using menuconfig
-bitbake -c menuconfig virtual/kernel
+kas shell kas-kepler-jetson.yml -c 'bitbake -c menuconfig virtual/kernel'
 
 # Generate the config fragment
-bitbake -c diffconfig virtual/kernel
+kas shell kas-kepler-jetson.yml -c 'bitbake -c diffconfig virtual/kernel'
 
 # Copy the fragment to your layer
-cp build/tmp/work/kepler_ecg_v1-kepler-linux/linux-jammy-nvidia-tegra/5.15.148+git/fragment.cfg meta-kepler-jetson/recipes-kernel/linux/linux-jammy-nvidia-tegra/my-fragment.cfg
-
-# Exit kas shell
-exit
+cp build/tmp/work/kepler_ecg_v1-kepler-linux/linux-jammy-nvidia-tegra/5.15.148+git/fragment.cfg meta-custom-layer/recipes-kernel/linux/linux-jammy-nvidia-tegra/my-fragment.cfg
 ```
 
 2. **Modify the existing kernel recipe bbappend**:
 
 ```bash
-# Then modify it to include your new fragment file
-echo "SRC_URI += \"file://my-fragment.cfg\"" >> meta-kepler-jetson/recipes-kernel/linux/linux-jammy-nvidia-tegra_%.bbappend
+# Modify it to include your new fragment file
+echo "SRC_URI += \"file://my-fragment.cfg\"" >> meta-custom-layer/recipes-kernel/linux/linux-jammy-nvidia-tegra_%.bbappend
 ```
 
 > **Note:** If you manually want to create a config fragment file, it should only contain the specific kernel options you want to modify. Each option should be on a separate line, and the format should match the kernel's `.config` file format.
@@ -357,42 +351,24 @@ This gives you access to bitbake commands without launching a build.
 
 ### Useful Bitbake Commands
 
-All bitbake commands should be run within a kas shell. First enter the shell:
-
-```bash
-kas shell kas-kepler-jetson.yml
-```
-
-Then, within the kas shell, you can run:
-
 ```bash
 # List available recipes
-bitbake-layers show-recipes
+kas shell kas-kepler-jetson.yml -c 'bitbake-layers show-recipes'
 
 # Show layer dependencies
-bitbake-layers show-layers
+kas shell kas-kepler-jetson.yml -c 'bitbake-layers show-layers'
 
 # Clean specific recipe
-bitbake <recipe> -c clean
+kas shell kas-kepler-jetson.yml -c 'bitbake <recipe> -c clean'
 
 # Build specific recipe
-bitbake <recipe>
+kas shell kas-kepler-jetson.yml -c 'bitbake <recipe>'
 
 # Enter a development shell for a given recipe
-bitbake <recipe> -c devshell
+kas shell kas-kepler-jetson.yml -c 'bitbake <recipe> -c devshell'
 
 # Show recipe dependencies
-bitbake -g <recipe> && cat pn-buildlist
-
-# Exit the kas shell when done
-exit
-```
-
-Alternatively, you can run single bitbake commands directly:
-
-```bash
-# Run a single bitbake command 
-kas shell kas-kepler-jetson.yml -c "bitbake <recipe>"
+kas shell kas-kepler-jetson.yml -c 'bitbake -g <recipe> && cat pn-buildlist'
 ```
 
 ## Troubleshooting
