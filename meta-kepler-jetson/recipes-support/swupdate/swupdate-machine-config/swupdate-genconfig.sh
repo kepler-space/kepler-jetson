@@ -1,34 +1,36 @@
-#!/bin/sh
+#!/bin/bash
+
+set -Eeuo pipefail
 
 get_current_slot() {
-    curslot=$(nvbootctrl get-current-slot)
-    if [ $curslot -eq 1 ]; then
-	echo "b"
+    local -r curslot="$(nvbootctrl get-current-slot)"
+    if [[ "${curslot}" == "0" ]]; then
+	    echo "a"
+    elif [[ "${curslot}" == "1" ]]; then
+	    echo "b"
     else
-	echo "a"
+        exit 1
+    fi
+}
+
+get_serial_number() {
+    if [[ -e /run/mfgdata/serial-number ]]; then
+        cat /run/mfgdata/serial-number
+    elif [[ -e /sys/module/fuse_burn/parameters/tegra_chip_uid ]]; then
+        cat /sys/module/fuse_burn/parameters/tegra_chip_uid
+    else
+        echo "unknown"
     fi
 }
 
 . /etc/os-release
 
-if [ -e /run/mfgdata/serial-number ]; then
-    SERIALNUMBER=$(cat /run/mfgdata/serial-number)
-elif [ -e /sys/module/fuse_burn/parameters/tegra_chip_uid ]; then
-    SERIALNUMBER=$(cat /sys/module/fuse_burn/parameters/tegra_chip_uid)
-else
-    SERIALNUMBER="unknown"
-fi
-
-BOOTSLOT=$(get_current_slot)
+BOOTSLOT="$(get_current_slot)"
+SERIALNUMBER="$(get_serial_number)"
 
 rm -f /run/swupdate/swupdate.cfg
 
-extrased=
-if [ ! -e /usr/share/swupdate/swupdate.pem ]; then
-    extrased="-e /public-key-file/d"
-fi
-sed -e"s,@SWVERSION@,$VERSION_ID," \
-    -e"s,@SERIALNUMBER@,$SERIALNUMBER," \
-    -e"s,@BOOTSLOT@,$BOOTSLOT," \
-    $extrased \
+sed -e"s,@SWVERSION@,${VERSION_ID}," \
+    -e"s,@SERIALNUMBER@,${SERIALNUMBER}," \
+    -e"s,@BOOTSLOT@,${BOOTSLOT}," \
     /usr/share/swupdate/swupdate.cfg.in > /run/swupdate/swupdate.cfg

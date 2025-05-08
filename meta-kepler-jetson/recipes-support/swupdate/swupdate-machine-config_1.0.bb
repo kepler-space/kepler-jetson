@@ -8,10 +8,6 @@ SRC_URI = "\
     file://swupdate-mods.conf \
 "
 
-SRC_URI:append:secureboot = " \
-    file://swupdate.pem \
-"
-
 SWUPDATE_BOARDNAME ??= "${MACHINE}"
 SWUPDATE_HWREVISION ??= "1.0"
 
@@ -22,7 +18,7 @@ do_compile() {
     rm -f ${B}/hwrevision
     echo "${SWUPDATE_BOARDNAME} ${SWUPDATE_HWREVISION}" > ${B}/hwrevision
     sed -e's,@MODEL@,${SWUPDATE_BOARDNAME},g' \
-	${S}/swupdate.cfg.in > ${B}/swupdate.cfg.in    
+	${S}/swupdate.cfg.in > ${B}/swupdate.cfg.in
 }
 
 do_install() {
@@ -37,11 +33,7 @@ do_install() {
     install -m 0644 ${S}/swupdate-mods.conf ${D}${sysconfdir}/systemd/system/swupdate.service.d/
 }
 
-do_install:append:secureboot() {
-    install -m 0644 ${S}/swupdate.pem ${D}${datadir}/swupdate/
-}
-
 FILES:${PN} += "${datadir}/swupdate"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-EXTRADEPS = "tegra-redundant-boot"
+EXTRADEPS = "tegra-redundant-boot bash"
 RDEPENDS:${PN} += "${EXTRADEPS}"

@@ -28,13 +28,13 @@ software =
                         sha256 = "$swupdate_get_sha256(@@ROOTFS_FILENAME@@)";
                     },
                     {
-                                                filename = "@@DEPLOY_KERNEL_IMAGE@@";
-                                                device = "@@ROOTFS_DEVICE_PATH@@/@@KERNEL_B_PARTNAME@@";
-                                        },
-                                        {
-                                                filename = "@@DTBFILE@@";
-                                                device = "@@ROOTFS_DEVICE_PATH@@/@@KERNEL_B_DTB_PARTNAME@@";
-                                        }
+                        filename = "@@DEPLOY_KERNEL_IMAGE@@";
+                        device = "@@ROOTFS_DEVICE_PATH@@/@@KERNEL_B_PARTNAME@@";
+                    },
+                    {
+                        filename = "@@DTBFILE@@";
+                        device = "@@ROOTFS_DEVICE_PATH@@/@@KERNEL_B_DTB_PARTNAME@@";
+                    }
 
                 );
                 files: (
@@ -76,13 +76,13 @@ software =
                         sha256 = "$swupdate_get_sha256(@@ROOTFS_FILENAME@@)";
                     },
                     {
-                                                filename = "@@DEPLOY_KERNEL_IMAGE@@";
-                                                device = "@@ROOTFS_DEVICE_PATH@@/@@KERNEL_A_PARTNAME@@";
-                                        },
-                                        {
-                                                filename = "@@DTBFILE@@";
-                                                device = "@@ROOTFS_DEVICE_PATH@@/@@KERNEL_A_DTB_PARTNAME@@";
-                                        }
+                        filename = "@@DEPLOY_KERNEL_IMAGE@@";
+                        device = "@@ROOTFS_DEVICE_PATH@@/@@KERNEL_A_PARTNAME@@";
+                    },
+                    {
+                        filename = "@@DTBFILE@@";
+                        device = "@@ROOTFS_DEVICE_PATH@@/@@KERNEL_A_DTB_PARTNAME@@";
+                    }
                 );
                 files: (
                     {
