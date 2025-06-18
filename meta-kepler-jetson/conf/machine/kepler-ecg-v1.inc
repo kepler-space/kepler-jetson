@@ -19,3 +19,6 @@ TEGRA_FLASHVAR_PMC_CONFIG ?= "tegra234-mb1-bct-padvoltage-default-kepler-ecg-v1.
 
 # Kernel device tree for ECGv1
 KERNEL_DEVICETREE ?= "tegra234-kepler-ecg-v1.dtb"
+
+# Platform name to match in UEFI bootloader during OTA updates
+TNSPEC_MACHINE = "jetson-agx-orin-devkit"
