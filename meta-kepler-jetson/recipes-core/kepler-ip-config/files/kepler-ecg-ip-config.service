@@ -1,0 +1,12 @@
+[Unit]
+Description=Set static IP based on GPIO
+After=network-pre.target
+Before=systemd-networkd.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/kepler-ecg-ip-config
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

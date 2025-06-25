@@ -6,6 +6,7 @@ inherit packagegroup
 
 RDEPENDS:${PN} = "\
     ${MACHINE_ESSENTIAL_EXTRA_RRECOMMENDS} \
+    kepler-ecg-ip-config \
     kepler-obc-uart \
     kernel-module-at24 \
     less \
