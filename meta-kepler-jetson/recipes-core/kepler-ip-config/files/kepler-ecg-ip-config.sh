@@ -23,7 +23,7 @@ readonly FALLBACK_IP="192.168.109.1/24"
 blade_id_bin=$(gpioget -c "${BLADE_ID_CHIP}" --numeric "${BLADE_ID_PINS[@]}" | tr -d "[:space:]")
 blade_id=$(( 2#${blade_id_bin} ))
 
-if [[ -n "${BLADE_ID_IPS[${blade_id}]}" ]]; then
+if [[ "${BLADE_ID_IPS[${blade_id}]+x}" ]]; then
     blade_ip="${BLADE_ID_IPS[${blade_id}]}"
     echo "Detected blade slot ${blade_id}. Using IP ${blade_ip}"
 else
