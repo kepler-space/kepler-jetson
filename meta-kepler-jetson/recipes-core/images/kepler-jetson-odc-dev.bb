@@ -7,6 +7,7 @@ require kepler-jetson-odc-base.inc
 IMAGE_FEATURES += "package-management"
 
 CORE_IMAGE_EXTRA_INSTALL += "packagegroup-kepler-jetson-odc-dev"
+CORE_IMAGE_EXTRA_INSTALL += "packagegroup-kepler-jetson-odc-docker"
 
 inherit extrausers
 
@@ -15,6 +16,6 @@ KEPLER_PASSWD = "\$5\$Sdxp/vN09rfswz/A\$.m2bPR.p0hA8dY0xD9qKq1XBYd0do6tIDxyGO3Rv
 EXTRA_USERS_PARAMS = " \
     useradd -u 1000 kepler; \
     usermod -p '${KEPLER_PASSWD}' kepler; \
-    usermod -a -G sudo kepler; \
+    usermod -a -G docker,sudo kepler; \
     usermod -p '${ROOT_PASSWD}' root; \
 "
