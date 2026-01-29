@@ -6,6 +6,7 @@ inherit packagegroup
 
 RDEPENDS:${PN} = "\
     bridge-utils \
+    docker-compose \
     iptables \
     iptables-modules \
     iptables-module-xt-conntrack \
