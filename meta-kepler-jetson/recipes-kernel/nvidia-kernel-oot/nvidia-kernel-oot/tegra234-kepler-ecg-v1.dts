@@ -109,4 +109,9 @@
     display@13800000 {
         status = "disabled";
     };
+    pps {
+        compatible = "pps-gpio";
+        assert-rising-edge;
+        gpios = <&gpio_aon TEGRA234_AON_GPIO(BB, 1) GPIO_ACTIVE_HIGH>;
+    };
 };
