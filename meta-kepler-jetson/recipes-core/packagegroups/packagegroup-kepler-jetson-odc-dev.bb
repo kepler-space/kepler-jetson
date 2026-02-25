@@ -11,6 +11,7 @@ RDEPENDS:${PN} = "\
     iperf3 \
     lrzsz \
     python3-jetson-stats \
+    rsyslog \
     stress-ng \
     sudo \
 "
