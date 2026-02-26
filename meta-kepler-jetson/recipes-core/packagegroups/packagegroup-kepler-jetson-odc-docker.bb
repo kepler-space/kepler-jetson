@@ -22,6 +22,7 @@ RDEPENDS:${PN} = "\
     kernel-module-iptable-nat \
     kernel-module-macvlan \
     kernel-module-nf-conntrack-netlink \
+    kernel-module-sctp \
     kernel-module-veth \
     kernel-module-xt-addrtype \
     kernel-module-xt-checksum \
@@ -29,5 +30,6 @@ RDEPENDS:${PN} = "\
     kernel-module-xt-masquerade \
     kernel-module-xt-nat \
     kernel-module-xt-redirect \
+    kernel-module-xt-sctp \
     kernel-module-xt-tcpudp \
 "
