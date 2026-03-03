@@ -21,6 +21,7 @@ RDEPENDS:${PN} = "\
     kernel-module-iptable-mangle \
     kernel-module-iptable-nat \
     kernel-module-macvlan \
+    kernel-module-md5 \
     kernel-module-nf-conntrack-netlink \
     kernel-module-sctp \
     kernel-module-veth \
