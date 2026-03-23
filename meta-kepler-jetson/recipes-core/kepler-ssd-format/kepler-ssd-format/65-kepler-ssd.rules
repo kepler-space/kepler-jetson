@@ -1,0 +1,13 @@
+ACTION=="remove", GOTO="kepler_ssd_end"
+SUBSYSTEM!="block", GOTO="kepler_ssd_end"
+KERNEL!="nvme*", GOTO="kepler_ssd_end"
+
+ENV{DEVTYPE}=="disk", IMPORT{builtin}="path_id"
+ENV{DEVTYPE}=="disk", ENV{ID_PATH}=="platform-14160000.pcie-pci-0004:01:00.0-nvme-1", SYMLINK+="ssd1"
+ENV{DEVTYPE}=="disk", ENV{ID_PATH}=="platform-14160000.pcie-pci-0005:01:00.0-nvme-1", SYMLINK+="ssd2"
+
+ENV{DEVTYPE}=="partition", IMPORT{parent}="ID_*"
+ENV{DEVTYPE}=="partition", ENV{ID_PATH}=="platform-14160000.pcie-pci-0004:01:00.0-nvme-1", SYMLINK+="ssd1p%n"
+ENV{DEVTYPE}=="partition", ENV{ID_PATH}=="platform-14160000.pcie-pci-0005:01:00.0-nvme-1", SYMLINK+="ssd2p%n"
+
+LABEL="kepler_ssd_end"
