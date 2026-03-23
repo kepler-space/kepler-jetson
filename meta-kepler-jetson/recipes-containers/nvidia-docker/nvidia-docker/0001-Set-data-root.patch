@@ -1,0 +1,24 @@
+From af24095781d28e9991e6175990f875f6796ba850 Mon Sep 17 00:00:00 2001
+From: swatson <swatson@kepler.space>
+Date: Mon, 23 Mar 2026 16:12:13 -0400
+Subject: [PATCH] Set data-root
+
+---
+ daemon.json | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/daemon.json b/daemon.json
+index ad77732..e41ae03 100644
+--- a/daemon.json
++++ b/daemon.json
+@@ -4,5 +4,6 @@
+             "path": "nvidia-container-runtime",
+             "runtimeArgs": []
+         }
+-    }
++    },
++    "data-root": "/mnt/persistent/docker"
+ }
+-- 
+2.49.0
+
