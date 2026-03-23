@@ -3,14 +3,14 @@ header:
 overrides:
     repos:
         meta-tegra:
-            commit: 447c21467f65be2389f68a189b6871f13729d222
+            commit: 924fac3ca880425768911a8f76df87f6dc5ed1dd
         meta-tegra-community:
-            commit: 241d1073ba8e610ef8da3fe8470b0a4d0567521f
+            commit: 7bb9a44281367129a5c21e722f6fa1cf192b0827
         meta-virtualization:
-            commit: 8b1543e121deda2445f80f74d85c10316d5b31f4
+            commit: 3dd635f613f7299d986a8ab6bc9f584370f8ed1d
         meta-openembedded:
-            commit: ec0469748be4159fb83fb0fa0148d786484c88cf
+            commit: 4d3e2639dec542b58708244662d5ce36810fc510
         poky:
-            commit: 1d54d1c4736a114e1cecbe85a0306e3814d5ce70
+            commit: b301218f4da7793624db3545efd8bf66888b77b0
         meta-swupdate:
-            commit: 226701adf0f7c8ed08d4d6a7783e88d34ef2d5e9
+            commit: 0792561b107e09c628f4765775726e9e68ad4713
