@@ -4,6 +4,7 @@ SRC_URI:append = "\
     file://tegra234-kepler-ecg-v1.patch \
     file://tegra234-kepler-ecg-v1-dynamic.dts \
     file://tegra234-kepler-ecg-v1-dynamic.patch \
+    file://tegra234-kepler-uart-dma.patch \
 "
 
 copy_kepler_dts() {

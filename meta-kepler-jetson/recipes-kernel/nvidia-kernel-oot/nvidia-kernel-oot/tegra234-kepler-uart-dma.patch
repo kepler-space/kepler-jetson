@@ -1,0 +1,23 @@
+From e707cc0a2fcbbe672abd8374c7c6a4493cb2d3c9 Mon Sep 17 00:00:00 2001
+From: Daniel Pietz <dpietz@kepler.space>
+Date: Tue, 21 Apr 2026 18:43:21 +0000
+Subject: [PATCH] FIX: Take NVIDIA patch for DMA UART on Jetson Jetpack 6.2.2  
+   * See
+ https://forums.developer.nvidia.com/t/solved-uart-serial-port-not-working-after-upgradint-to-jetpack-6-2-2-orin-nano-nx/363837/7
+
+---
+ hardware/nvidia/t23x/nv-public/tegra234.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/hardware/nvidia/t23x/nv-public/tegra234.dtsi b/hardware/nvidia/t23x/nv-public/tegra234.dtsi
+index 2601b43..04660e3 100644
+--- a/hardware/nvidia/t23x/nv-public/tegra234.dtsi
++++ b/hardware/nvidia/t23x/nv-public/tegra234.dtsi
+@@ -2765,6 +2765,7 @@
+ 			resets = <&bpmp TEGRA234_RESET_UARTA>;
+ 			dmas = <&gpcdma 8>, <&gpcdma 8>;
+ 			dma-names = "rx", "tx";
++			iommus = <&smmu_niso0 TEGRA234_SID_GPCDMA>;
+ 			status = "disabled";
+ 		};
+ 
