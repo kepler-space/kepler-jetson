@@ -1,0 +1,39 @@
+diff --git a/Silicon/NVIDIA/Library/TegraSerialPortLib/TegraSerialPortLib.c b/Silicon/NVIDIA/Library/TegraSerialPortLib/TegraSerialPortLib.c
+index dad4a5c0..555386ba 100644
+--- a/Silicon/NVIDIA/Library/TegraSerialPortLib/TegraSerialPortLib.c
++++ b/Silicon/NVIDIA/Library/TegraSerialPortLib/TegraSerialPortLib.c
+@@ -30,6 +30,7 @@ STATIC
+ SERIAL_MAPPING  gSerialCompatibilityMap[] = {
+   { TEGRA_UART_TYPE_UTC,  TegraUtcSerialPortGetObject,      SIZE_64KB, FALSE, 0 },
+   { TEGRA_UART_TYPE_TCU,  TegraCombinedSerialPortGetObject, SIZE_4KB,  FALSE, 0 },
++  { TEGRA_UART_TYPE_16550, Tegra16550SerialPortGetObject,   SIZE_64KB, FALSE, 0 },
+   { TEGRA_UART_TYPE_SBSA, TegraSbsaSerialPortGetObject,     SIZE_4KB,  FALSE, 0 },
+   { TEGRA_UART_TYPE_NONE, NULL,                             0,         FALSE, 0 }
+ };
+@@ -54,13 +55,22 @@ CONST CHAR8  *gSerialUtcCompatibilityStrings[] = {
+   NULL
+ };
+ 
++STATIC
++CONST CHAR8  *gSerial16550CompatibilityStrings[] = {
++  "nvidia,*-uart",
++  "nvidia,*-hsuart",
++  NULL
++};
++
+ #define MAX_COMPATIBLE_STRINGS  (ARRAY_SIZE (gSerialSbsaCompatibilityStrings) + \
+                                  ARRAY_SIZE (gSerialTcuCompatibilityStrings) + \
+-                                 ARRAY_SIZE (gSerialUtcCompatibilityStrings))
++                                 ARRAY_SIZE (gSerialUtcCompatibilityStrings) + \
++                                 ARRAY_SIZE (gSerial16550CompatibilityStrings))
+ 
+ STATIC
+ SERIAL_COMPATIBILITY_INFO  gSerialCompatibilityInfo[] = {
+   { TEGRA_UART_TYPE_SBSA, gSerialSbsaCompatibilityStrings },
++  { TEGRA_UART_TYPE_16550, gSerial16550CompatibilityStrings },
+   { TEGRA_UART_TYPE_UTC,  gSerialUtcCompatibilityStrings  },
+   { TEGRA_UART_TYPE_TCU,  gSerialTcuCompatibilityStrings  }
+ };
+-- 
+2.34.1
+
