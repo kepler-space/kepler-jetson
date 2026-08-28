@@ -126,6 +126,16 @@ KAS_MACHINE=kepler-ecg-v1-64gb kas build kas-kepler-jetson.yml
 
 The build process will take some time depending on your hardware. Once complete, the output images will be found in `build/tmp/deploy/images/kepler-ecg-v1/` or `build/tmp/deploy/images/kepler-ecg-v1-64gb/` depending on which variant you built.
 
+### CVE Checking
+
+To build the image with a CVE report, set the `ENABLE_CVE_CHECK` environment variable:
+
+```bash
+ENABLE_CVE_CHECK=1 kas build kas-kepler-jetson.yml
+```
+
+Once complete, the report will be found in `build/tmp/log/cve/`.
+
 ## Flashing a Jetson Devkit
 
 ### Devkit USB Recovery Mode Flashing

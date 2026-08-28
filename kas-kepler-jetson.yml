@@ -5,6 +5,9 @@ machine: kepler-ecg-v1
 distro: kepler-jetson
 target: swupdate-image-tegra
 
+env:
+  ENABLE_CVE_CHECK: "0"
+
 defaults:
   repos:
     branch: scarthgap
@@ -47,6 +50,8 @@ local_conf_header:
         NO_RECOMMENDATIONS = "1"
     build-info: |
         INHERIT += "image-buildinfo"
+        INHERIT:append = "${@bb.utils.contains('ENABLE_CVE_CHECK', '1', ' cve-check', '', d)}"
+        CVE_CHECK_SHOW_WARNINGS = "0"
         IMAGE_BUILDINFO_VARS:append = " DATETIME DISTRO_NAME IMAGE_BASENAME MACHINE TUNE_PKGARCH"
         IMAGE_BUILDINFO_VARS:append = " MACHINE_FEATURES DISTRO_FEATURES COMMON_FEATURES IMAGE_FEATURES"
         IMAGE_BUILDINFO_VARS:append = " TUNE_FEATURES TARGET_FPU"
