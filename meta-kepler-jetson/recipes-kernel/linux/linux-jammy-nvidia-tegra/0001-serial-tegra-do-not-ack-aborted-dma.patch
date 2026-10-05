@@ -1,0 +1,43 @@
+From d0d5e53c360d0e516929e16ff46ff2fd1083a1c8 Mon Sep 17 00:00:00 2001
+From: swatson <swatson@kepler.space>
+Date: Thu, 1 Oct 2026 16:25:48 -0400
+Subject: [PATCH] serial: tegra: do not ACK aborted DMA descriptors
+
+Saved DMA descriptors may already be freed when UART shutdown runs.
+Only ACK RX descriptors in the normal completion callback.
+
+Upstream-Status: Pending
+Signed-off-by: swatson <swatson@kepler.space>
+---
+ drivers/tty/serial/serial-tegra.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/tty/serial/serial-tegra.c b/drivers/tty/serial/serial-tegra.c
+--- a/drivers/tty/serial/serial-tegra.c
++++ b/drivers/tty/serial/serial-tegra.c
+@@ -630,7 +630,6 @@
+ 	dmaengine_tx_status(tup->tx_dma_chan, tup->tx_cookie, &state);
+ 	dmaengine_terminate_all(tup->tx_dma_chan);
+ 	count = tup->tx_bytes_requested - state.residue;
+-	async_tx_ack(tup->tx_dma_desc);
+ 	uart_xmit_advance(&tup->uport, count);
+ 	tup->tx_in_progress = 0;
+ }
+@@ -720,7 +719,6 @@
+ 	struct tty_port *port = &tup->uport.state->port;
+ 	unsigned int count;
+ 
+-	async_tx_ack(tup->rx_dma_desc);
+ 	count = tup->rx_bytes_requested - residue;
+ 
+ 	/* If we are here, DMA is stopped */
+@@ -769,6 +767,7 @@
+ 
+ 
+ 	tup->rx_dma_active = false;
++	async_tx_ack(tup->rx_dma_desc);
+ 	tegra_uart_rx_buffer_push(tup, 0);
+ 	tegra_uart_start_rx_dma(tup);
+ 
+-- 
+2.43.0
