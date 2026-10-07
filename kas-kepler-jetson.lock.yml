@@ -11,6 +11,6 @@ overrides:
         meta-openembedded:
             commit: 4d3e2639dec542b58708244662d5ce36810fc510
         poky:
-            commit: b301218f4da7793624db3545efd8bf66888b77b0
+            commit: 3a3d07f625aee7b87ea1026526b756447c357652
         meta-swupdate:
             commit: 0792561b107e09c628f4765775726e9e68ad4713
