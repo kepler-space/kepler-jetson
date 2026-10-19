@@ -1,0 +1,30 @@
+Read the blade ID from the simulated GPIO chip
+
+The simulated blade ID GPIOs are not necessarily gpiochip0 under QEMU, so
+take the chip from the environment file written by
+kepler-ecg-qemu-blade-id.
+
+Upstream-Status: Inappropriate [QEMU only]
+---
+--- a/kepler-ecg-ip-config.sh
++++ b/kepler-ecg-ip-config.sh
+@@ -6,7 +6,8 @@
+ 
+ readonly GATEWAY_HOSTNAME="kepler-mpcu.local"
+ 
+-readonly BLADE_ID_CHIP="gpiochip0"
++# Set by the simulated blade ID GPIOs
++readonly BLADE_ID_CHIP="${BLADE_ID_CHIP:-gpiochip0}"
+ readonly BLADE_ID_PINS=(
+     "109"
+     "127"
+--- a/kepler-ecg-ip-config.service
++++ b/kepler-ecg-ip-config.service
+@@ -5,6 +5,7 @@
+ 
+ [Service]
+ Type=oneshot
++EnvironmentFile=-/run/kepler/blade-id.env
+ ExecStart=/usr/bin/kepler-ecg-ip-config
+ RemainAfterExit=yes
+ 

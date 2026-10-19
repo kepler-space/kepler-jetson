@@ -1,0 +1,29 @@
+Partition blank emulated SSDs
+
+fdisk rejects a first sector of 32 ("Value out of range", the minimum is
+2048 with 1 MiB alignment), so the partition table is never written. ECG
+SSDs already have a partition 1, which mkfs then reformats, but the
+emulated SSD starts out blank. Accept the default first sector instead,
+and wait for udev to create the partition device rather than sleeping,
+which may not be long enough under QEMU's emulation.
+
+Upstream-Status: Inappropriate [QEMU only]
+---
+--- a/kepler-ssd-format.sh
++++ b/kepler-ssd-format.sh
+@@ -69,13 +69,13 @@
+         n   # Add a new partition
+         p   # Make it a primary partition
+         1   # Make it partition number 1.
+-        32  # Start at sector 32
++        ""  # Blank line to accept the default first sector.
+         ""  # Blank line to accept end of the device as the last sector.
+         w   # Write changes
+     )
+ 
+     printf '%s\n' "${fdisk_cmds[@]}" | fdisk "${dev}" &>/dev/null
+-    sleep 1
++    udevadm settle
+     mkfs.ext4 -F -O 64bit "${dev_p1}" &>/dev/null
+ }
+ 
