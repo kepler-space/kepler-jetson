@@ -19,6 +19,5 @@ do_install:append() {
 }
 
 RDEPENDS:${PN} += "os-release"
-RDEPENDS:${PN} += "swupdate-machine-config"
 FILES_${PN}:remove = "${sysconfdir}/swupdate.cfg"
 FILES:${PN} += "${datadir}/lua"
