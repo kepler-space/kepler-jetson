@@ -1,0 +1,27 @@
+header:
+  version: 14
+  includes:
+    - kas-kepler-jetson.yml
+    - kas-kepler-jetson.lock.yml
+
+machine: kepler-ecg-qemu
+target: kepler-jetson-odc-dev
+
+repos:
+  meta-kepler-ecg-qemu:
+    path: meta-kepler-ecg-qemu
+
+local_conf_header:
+  qemu-testing: |
+    # Keep QEMU build output separate from the Jetson builds sharing this build
+    # directory. Their SBOM documents would otherwise get mixed up, since the
+    # QEMU machine's package architectures include the Jetson's (armv8a).
+    TMPDIR = "${TOPDIR}/tmp-qemu"
+    # Run the image in QEMU with: kas shell kas-kepler-jetson-qemu.yml -c "runqemu nographic slirp"
+    # Run the automated tests with: kas build kas-kepler-jetson-qemu.yml -c testimage
+    IMAGE_CLASSES += "testimage"
+    TEST_RUNQEMUPARAMS = "slirp nographic"
+    TEST_SUITES = "ping ssh date df kepler_ecg"
+    # testimage logs in over SSH as root without a password. Emulator images only.
+    EXTRA_IMAGE_FEATURES += "allow-empty-password empty-root-password allow-root-login"
+    ROOT_PASSWD:pn-kepler-jetson-odc-dev = ""

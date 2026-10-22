@@ -9,6 +9,8 @@ SRC_URI = "\
     file://bootloader-update.lua \
 "
 
+COMPATIBLE_MACHINE = "(tegra)"
+
 inherit swupdate image_types_tegra
 
 DEPLOY_KERNEL_IMAGE ?= "${@os.path.basename(tegra_kernel_image(d))}"

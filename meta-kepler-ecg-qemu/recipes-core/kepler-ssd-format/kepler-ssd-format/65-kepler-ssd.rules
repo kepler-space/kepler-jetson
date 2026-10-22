@@ -1,0 +1,12 @@
+ACTION=="remove", GOTO="kepler_ssd_end"
+SUBSYSTEM!="block", GOTO="kepler_ssd_end"
+KERNEL!="nvme*", GOTO="kepler_ssd_end"
+
+# Emulated SSD on QEMU, identified by the serial number set in the machine's
+# QB_OPT_APPEND
+ENV{DEVTYPE}=="disk", ENV{ID_SERIAL_SHORT}=="kepler-ssd1*", SYMLINK+="ssd1"
+
+ENV{DEVTYPE}=="partition", IMPORT{parent}="ID_*"
+ENV{DEVTYPE}=="partition", ENV{ID_SERIAL_SHORT}=="kepler-ssd1*", SYMLINK+="ssd1p%n"
+
+LABEL="kepler_ssd_end"

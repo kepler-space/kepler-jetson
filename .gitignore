@@ -1,5 +1,6 @@
 poky
 meta-*
 !meta-kepler-jetson
+!meta-kepler-ecg-qemu
 build
 .kas_shell_history

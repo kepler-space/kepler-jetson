@@ -11,6 +11,7 @@ A custom Yocto-based Linux image for Kepler's ECG payloads. This project leverag
 - [Building the Image](#building-the-image)
   - [32GB Variant](#32gb-variant)
   - [64GB Variant](#64gb-variant)
+- [Running the ECG in QEMU](#running-the-ecg-in-qemu)
 - [Flashing the Jetson](#flashing-the-jetson)
   - [USB Recovery Mode Flashing](#usb-recovery-mode-flashing)
   - [Connecting via UART Console](#connecting-via-uart-console)
@@ -135,6 +136,53 @@ ENABLE_CVE_CHECK=1 kas build kas-kepler-jetson.yml
 ```
 
 Once complete, the report will be found in `build/tmp/log/cve/`.
+
+## Running the ECG in QEMU
+
+The `kepler-ecg-qemu` machine runs the ECG software on QEMU's arm64 `virt` machine, for developing and testing
+software without hardware. QEMU can't emulate the Jetson itself, so it uses the `linux-yocto` kernel and leaves out
+Jetson specific software (CUDA, NVIDIA drivers, bootloader updates). The QEMU support is in the `meta-kepler-ecg-qemu`
+layer, which only `kas-kepler-jetson-qemu.yml` includes, so it doesn't affect ECG builds. The ECG peripherals are
+emulated:
+
+| ECG                                  | QEMU                                                                          |
+|--------------------------------------|-------------------------------------------------------------------------------|
+| eth0, configured from the blade ID   | eth0 (virtio), with simulated blade ID GPIOs                                  |
+| Blade slot                           | `kepler.blade_id=<n>` kernel parameter, no slot (fallback IP) if not set      |
+| SSD (`/dev/ssd1`, `/mnt/persistent`) | NVMe drive backed by `kepler-ecg-qemu-ssd1.qcow2` in the deploy directory     |
+| OBC UART                             | 16550 UART (`ttyS0`) with a login, connected to a pty on the host             |
+
+Build the image:
+
+```bash
+kas build kas-kepler-jetson-qemu.yml
+```
+
+Run it, with the console on stdin/stdout and SSH forwarded to port 2222 on the host:
+
+```bash
+kas shell kas-kepler-jetson-qemu.yml -c "runqemu nographic slirp"
+ssh -p 2222 root@localhost
+```
+
+QEMU prints the host pty the OBC UART is connected to (`char device redirected to /dev/pts/N (label obc)`), which
+you can open with e.g. `screen /dev/pts/N 115200`. To simulate a blade slot, add the kernel parameter, e.g.
+`runqemu nographic slirp bootparams="kepler.blade_id=4"`. The emulated SSD starts out blank: format it with
+`kepler-ssd-format ssd1`, as on a new ECG. Exit QEMU with `Ctrl+a` followed by `x`.
+
+> **Note:** The QEMU image has an empty root password and allows root logins over SSH, so that the automated tests
+> can log in. Only use it for emulation.
+
+### Automated Tests
+
+The automated tests boot the image in QEMU and run OE's runtime tests along with the ECG tests in
+`meta-kepler-ecg-qemu/lib/oeqa/runtime/cases/kepler_ecg.py`. They don't need root access, so they can run in CI:
+
+```bash
+kas build kas-kepler-jetson-qemu.yml -c testimage
+```
+
+Results are written to `build/tmp-qemu/log/oeqa/`, and the QEMU images to `build/tmp-qemu/deploy/images/kepler-ecg-qemu/`.
 
 ## Flashing a Jetson Devkit
 

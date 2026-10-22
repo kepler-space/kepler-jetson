@@ -1,0 +1,13 @@
+[Unit]
+Description=Simulate the ECG blade ID GPIOs
+Requires=sys-kernel-config.mount
+After=sys-kernel-config.mount
+Before=kepler-ecg-ip-config.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/kepler-ecg-qemu-blade-id
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
