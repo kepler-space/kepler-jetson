@@ -41,6 +41,10 @@ repos:
   meta-swupdate:
     url: https://github.com/sbabic/meta-swupdate
 
+buildtools:
+  version: "5.0.18"
+  sha256sum: "d2b0398ecc37b00ab35ccd2b57532c504927ef333ec0579c0de4d879dd8bd9a2"
+
 local_conf_header:
     swupdate-tegra: |
         IMAGE_INSTALL:append = " swupdate swupdate-ipc"
