@@ -6,6 +6,9 @@ set -Eeuo pipefail
 
 readonly GATEWAY_HOSTNAME="kepler-mpcu.local"
 
+# Impacts outbound public traffic only
+readonly DHCP_OUTBOUND_ETH0_MTU=1400
+
 readonly BLADE_ID_CHIP="gpiochip0"
 readonly BLADE_ID_PINS=(
     "109"
@@ -59,6 +62,9 @@ Name=eth0
 
 [Network]
 DHCP=ipv4
+
+[DHCPv4]
+RouteMTUBytes=${DHCP_OUTBOUND_ETH0_MTU}
 
 [Address]
 Label=eth0:0
