@@ -72,7 +72,7 @@ Address=${blade_ip}
 EOF
 
 # Keep the fallback IP as a secondary address for backwards compatibility
-if [[ "${blade_id}" != "${FALLBACK_BLADE_IP}" ]]; then
+if [[ "${blade_ip}" != "${FALLBACK_BLADE_IP}" ]]; then
     cat <<EOF >> /lib/systemd/network/50-eth0.network
 
 [Address]
