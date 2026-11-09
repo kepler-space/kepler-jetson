@@ -8,9 +8,9 @@ Upstream-Status: Inappropriate [QEMU only]
 ---
 --- a/kepler-ecg-ip-config.sh
 +++ b/kepler-ecg-ip-config.sh
-@@ -6,7 +6,8 @@
- 
- readonly GATEWAY_HOSTNAME="kepler-mpcu.local"
+@@ -9,7 +9,8 @@
+ # Impacts outbound public traffic only
+ readonly DHCP_OUTBOUND_ETH0_MTU=1400
  
 -readonly BLADE_ID_CHIP="gpiochip0"
 +# Set by the simulated blade ID GPIOs
